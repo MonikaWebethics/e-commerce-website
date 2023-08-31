@@ -4,8 +4,7 @@ import { Link } from "react-router-dom";
 import { slice } from "lodash";
 import { useDispatch } from "react-redux";
 import { addtoCart } from "redux/cartSlice";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 
 export function ProductList() {
   const dispatch = useDispatch();
@@ -92,7 +91,6 @@ export function ProductList() {
         </div>
       ) : (
         <div className="container py-5">
-          <ToastContainer />
           <div className="row pb-5">
             <div className="col-3">
               <select

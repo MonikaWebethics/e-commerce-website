@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useAxios } from "helpers/useAxios";
+import { useDispatch } from "react-redux";
+import { addtoCart } from "redux/cartSlice";
+import { toast } from "react-toastify";
+
 export function Product() {
+  const dispatch = useDispatch();
+  const [qty, setQty] = useState(1);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
@@ -18,6 +24,11 @@ export function Product() {
     };
     fetchProduct();
   }, [id]);
+
+  const handleAddtoCart = (item) => {
+    dispatch(addtoCart({ item, qty }));
+    toast.success("Item Added to Cart");
+  };
   return (
     <>
       {loading ? (
@@ -42,7 +53,10 @@ export function Product() {
               <p className="h5 mb-3">Price: ${data.price}</p>
               <p className="h5 mb-3">Category: {data.category}</p>
               <p className="h5 mb-3">Rating: {data.rating.rate}</p>
-              <button className="btn btn-primary btn-lg mb-3">
+              <button
+                onClick={() => handleAddtoCart(data)}
+                className="btn btn-primary btn-lg mb-3"
+              >
                 Add to Cart
               </button>
               <div className="input-group">
@@ -52,6 +66,7 @@ export function Product() {
                   className="form-control"
                   defaultValue={1}
                   min={1}
+                  onChange={(e) => setQty(e.target.value)}
                 />
               </div>
             </div>
