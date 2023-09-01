@@ -10,7 +10,7 @@ export function ProductList() {
   const dispatch = useDispatch();
   const [data, setData] = useState([]);
   const [category, setCategory] = useState([]);
-  const [qty, setQty] = useState(1);
+  const [productQuantities, setProductQuantities] = useState({});
   const [loading, setLoading] = useState(true);
   const [index, setIndex] = useState(6);
   const [filterData, setFilterData] = useState({
@@ -78,10 +78,21 @@ export function ProductList() {
     return description;
   };
 
+  const setQtyForItem = (itemId, quantity) => {
+    setProductQuantities((prevQuantities) => ({
+      ...prevQuantities,
+      [itemId]: parseInt(quantity, 10),
+    }));
+  };
+
+  const getProductQty = (itemId) => {
+    return productQuantities[itemId] || 1;
+  };
   const handleAddtoCart = (item) => {
-    dispatch(addtoCart({ item, qty }));
+    dispatch(addtoCart({ item, qty: getProductQty(item.id) }));
     toast.success("Item Added to Cart");
   };
+
   return (
     <>
       {loading ? (
@@ -101,7 +112,7 @@ export function ProductList() {
                 <option value="default">Select Category</option>
                 {category.map((item, index) => (
                   <option key={index} value={item}>
-                    {item}
+                    {item.charAt(0).toUpperCase() + item.slice(1)}
                   </option>
                 ))}
               </select>
@@ -113,7 +124,7 @@ export function ProductList() {
                 className="form-select"
                 aria-label="Default select example"
               >
-                <option value="default">Price range</option>
+                <option value="default">Price Range</option>
                 <option value="High">High to Low</option>
                 <option value="Low">Low to High</option>
               </select>
@@ -171,7 +182,7 @@ export function ProductList() {
                         className="form-control"
                         min={1}
                         defaultValue={1}
-                        onChange={(e) => setQty(e.target.value)}
+                        onChange={(e) => setQtyForItem(item.id, e.target.value)}
                       />
                     </div>
                   </div>

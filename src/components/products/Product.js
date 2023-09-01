@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 
 export function Product() {
   const dispatch = useDispatch();
-  const [qty, setQty] = useState(1);
+  const [productQuantities, setProductQuantities] = useState({});
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
@@ -25,8 +25,18 @@ export function Product() {
     fetchProduct();
   }, [id]);
 
+  const setQtyForItem = (itemId, quantity) => {
+    setProductQuantities((prevQuantities) => ({
+      ...prevQuantities,
+      [itemId]: parseInt(quantity, 10),
+    }));
+  };
+
+  const getProductQty = (itemId) => {
+    return productQuantities[itemId] || 1;
+  };
   const handleAddtoCart = (item) => {
-    dispatch(addtoCart({ item, qty }));
+    dispatch(addtoCart({ item, qty: getProductQty(item.id) }));
     toast.success("Item Added to Cart");
   };
   return (
@@ -64,9 +74,9 @@ export function Product() {
                 <input
                   type="number"
                   className="form-control"
-                  defaultValue={1}
                   min={1}
-                  onChange={(e) => setQty(e.target.value)}
+                  defaultValue={1}
+                  onChange={(e) => setQtyForItem(data.id, e.target.value)}
                 />
               </div>
             </div>
